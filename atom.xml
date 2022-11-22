@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://www.486255.com</id>
+    <title>ChenC</title>
+    <updated>2022-11-22T04:21:00.050Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://www.486255.com"/>
+    <link rel="self" href="https://www.486255.com/atom.xml"/>
+    <subtitle>94575594</subtitle>
+    <logo>https://www.486255.com/images/avatar.png</logo>
+    <icon>https://www.486255.com/favicon.ico</icon>
+    <rights>All rights reserved 2022, ChenC</rights>
+    <entry>
+        <title type="html"><![CDATA[Swagger 服务扩展方法]]></title>
+        <id>https://www.486255.com/WPpHWzLjA/</id>
+        <link href="https://www.486255.com/WPpHWzLjA/">
+        </link>
+        <updated>2022-11-17T13:54:43.000Z</updated>
+        <content type="html"><![CDATA[<pre><code>[ApiVersion(&quot;1.0&quot;)]
+[ControllerName(&quot;控制器名称&quot;)]
+</code></pre>
+<pre><code>/// &lt;summary&gt;
+/// Swagger 服务扩展方法
+/// &lt;/summary&gt;
+public static class SwaggerServiceCollectionExtensions
+{
+    /// &lt;summary&gt;
+    /// 添加 Swagger 接口配置文档
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;services&quot;&gt;&lt;/param&gt;
+    /// &lt;param name=&quot;xmlName&quot;&gt;当前接口项目生成xml文档文件名&lt;/param&gt;
+    /// &lt;returns&gt;&lt;/returns&gt;
+    public static IServiceCollection AddSwagger(this IServiceCollection services)
+    {
+        services.AddSwaggerGen(options =&gt;
+        {
+            // 接口文档定义
+            options.SwaggerDoc(&quot;v1&quot;, new OpenApiInfo
+            {
+                Title = $&quot;Api 接口文档&quot;,
+                Version = &quot;v1&quot;,
+                Description = $&quot;切换版本请点右上角版本切换&quot;
+            });
+            // 接口文档定义
+            options.SwaggerDoc(&quot;v2&quot;, new OpenApiInfo
+            {
+                Title = $&quot;Api 接口文档&quot;,
+                Version = &quot;v2&quot;,
+                Description = $&quot;切换版本请点右上角版本切换&quot;
+            });
+            //添加全局安全性需求
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference()
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = &quot;bearerAuth&quot;
+                        }
+                    }, Array.Empty&lt;string&gt;()
+                }
+            });
+
+            //添加一个必须的全局安全信息，和AddSecurityDefinition方法指定的方案名称要一致，这里是Bearer。
+            options.AddSecurityDefinition(&quot;bearerAuth&quot;,
+                new OpenApiSecurityScheme
+                {
+                    Description = &quot;JWT Authorization header using the Bearer scheme. Example: \&quot;Authorization: Bearer {token}\&quot;&quot;,
+                    Name = &quot;Authorization&quot;,
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    //内容为以 bearer开头
+                    Scheme = &quot;bearer&quot;,
+                    BearerFormat = &quot;JWT&quot;
+                });
+
+
+            // 获取自定义的xml目录    
+            DirectoryInfo dir = new DirectoryInfo(AppContext.BaseDirectory);
+            // 获取目录下的所有xml文件，并设置为swagger文档包含文件
+            dir.GetFiles(&quot;WisdomClassRoom.*.xml&quot;).ToList().ForEach(u =&gt;
+            {
+                options.IncludeXmlComments(u.FullName, true);
+            });
+            // 获取Xml文档
+            //var xmlPath = Path.Combine(AppContext.BaseDirectory, $@&quot;{xmlName}.xml&quot;);
+            //options.IncludeXmlComments(xmlPath, true);
+        });
+        return services;
+    }
+}
+
+</code></pre>
+<pre><code>if (env.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =&gt;
+    {
+        c.SwaggerEndpoint(&quot;/swagger/v1/swagger.json&quot;, &quot;Api v1&quot;);
+        c.SwaggerEndpoint(&quot;/swagger/v2/swagger.json&quot;, &quot;Api v2&quot;);
+        // 折叠所有接口文档
+        c.DocExpansion(DocExpansion.None);
+    });
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Array数组去重]]></title>
+        <id>https://www.486255.com/pBiIzOPPV/</id>
+        <link href="https://www.486255.com/pBiIzOPPV/">
+        </link>
+        <updated>2022-11-10T07:39:43.000Z</updated>
+        <content type="html"><![CDATA[<p>ES6 提供了新的数据结构 Set。它类似于数组，但是成员的值都是唯一的，没有重复的值<br>
+Set内部使用===来判断是否相等，类似'1'和1会两个都保存，NaN和NaN只会保存一个<br>
+例：</p>
+<pre><code>var a=[1,2,3,4,5,2,3,4]
+var b=[...new Set(a)]
+</code></pre>
+<p>输出b</p>
+<pre><code>[1, 2, 3, 4, 5]
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[对象使用动态字段名]]></title>
+        <id>https://www.486255.com/0eRMtdVck/</id>
+        <link href="https://www.486255.com/0eRMtdVck/">
+        </link>
+        <updated>2022-11-10T07:32:42.000Z</updated>
+        <content type="html"><![CDATA[<p>使用<code>[]</code>符号<br>
+例：</p>
+<pre><code>var field='userName'
+var obj={
+    [field]:'张三'
+}
+</code></pre>
+<p>输出obj</p>
+<pre><code>{userName: '张三'}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[接口统一格式返回]]></title>
+        <id>https://www.486255.com/U_NARu34-/</id>
+        <link href="https://www.486255.com/U_NARu34-/">
+        </link>
+        <updated>2022-11-07T11:55:39.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="扩展方法">扩展方法</h3>
+<pre><code>public class ModelActionFilter : ActionFilterAttribute
+{
+    /// &lt;summary&gt;
+    /// 在Controller的Action执行后执行
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;context&quot;&gt;&lt;/param&gt;
+    public override void OnActionExecuted(ActionExecutedContext context)
+    {
+        //特殊处理：对有ApiResultIgnoreAttribute标签的，不进行返回结果包装，原样输出
+        var controllerActionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
+        if (controllerActionDescriptor != null)
+        {
+            var isDefined = controllerActionDescriptor.EndpointMetadata.Any(a =&gt; a.GetType().Equals(typeof(ApiResultIgnoreAttribute)));
+            if (isDefined)
+            {
+                return;
+            }
+        }
+        // 返回结果为JsonResult的请求进行Result包装
+        if (context.Result != null)
+        {
+            switch (context.Result)
+            {
+                case ObjectResult:
+                    {
+                        var result = context.Result as ObjectResult;
+                        context.Result = new JsonResult(UniformResult&lt;object&gt;.Create(result.Value));
+                        break;
+                    }
+                case EmptyResult:
+                    context.Result = new JsonResult(UniformResult&lt;object&gt;.Create(null));
+                    break;
+                case ContentResult:
+                    {
+                        var result = context.Result as ContentResult;
+                        context.Result = new JsonResult(UniformResult&lt;object&gt;.Create(result.Content));
+                        break;
+                    }
+            }
+        }
+
+        base.OnActionExecuted(context);
+    }
+
+    /// &lt;summary&gt;
+    /// 在Controller的Action执行前执行
+    /// &lt;/summary&gt;
+    /// &lt;param name=&quot;context&quot;&gt;&lt;/param&gt;
+    public override void OnActionExecuting(ActionExecutingContext context)
+    {
+        //循环获取在Controller的Action方法中定义的参数
+        foreach (var parameter in context.ActionDescriptor.Parameters)
+        {
+            var parameterName = parameter.Name;//获取Action方法中参数的名字
+            var parameterType = parameter.ParameterType;//获取Action方法中参数的类型
+
+            //判断该Controller的Action方法是否有类型为BaseDto的参数
+            if (parameterType.BaseType == typeof(CreateAndUpdateBaseDto))
+            {
+                //如果有，那么就获取BaseDto类型参数的值
+                var baseEntity = context.ActionArguments[parameterName] as CreateAndUpdateBaseDto;
+                if (baseEntity != null)
+                {
+                    // 从token中获取UserId
+                    var userClaim = context.HttpContext.User.FindFirst(x =&gt; x.Type == ClaimTypes.NameIdentifier);
+                    if (userClaim != null &amp;&amp; long.TryParse(userClaim.Value, out long userId))
+                    {
+                        // 赋值当前用户Id
+                        baseEntity.CreateId = userId;
+                        baseEntity.UpdateId = userId;
+                    }
+                }
+            }
+        }
+
+        base.OnActionExecuting(context);
+    }
+}
+
+</code></pre>
+<h3 id="startup使用">Startup使用</h3>
+<pre><code>options.Filters.Add&lt;ModelActionFilter&gt;();
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[全局异常捕获]]></title>
+        <id>https://www.486255.com/nOZ2Oduf6/</id>
+        <link href="https://www.486255.com/nOZ2Oduf6/">
+        </link>
+        <updated>2022-11-07T11:52:27.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="扩展方法">扩展方法</h3>
+<pre><code>/// &lt;summary&gt;
+/// 全局异常捕获
+/// &lt;/summary&gt;
+public class GlobalExceptionFilter : IAsyncExceptionFilter
+{
+    private readonly ILogger&lt;GlobalExceptionFilter&gt; _logger;
+
+    public GlobalExceptionFilter(ILogger&lt;GlobalExceptionFilter&gt; logger)
+    {
+        this._logger = logger; //在构造函数中注入日志处理实例
+    }
+
+    public async Task OnExceptionAsync(ExceptionContext context)
+    {
+        // 如果异常没有被处理则进行处理
+        if (context.ExceptionHandled == false)
+        {
+            // 定义返回类型
+            UniformResult&lt;object&gt; result;
+
+            // 如果为业务逻辑抛出的内部异常
+            if (context.Exception is FriendlyInternalException ex)
+            {
+                // 企业微信异常通知
+                await ExceptionNotice.SendFriendlyExceptionAsync(ex);
+
+                result = UniformResult&lt;object&gt;
+                    .Create(ex.FriendlyData, ex.ErrorCode, context.Exception.Message);
+            }
+            else
+            {
+                // 程序异常,不对外暴露程序异常细节
+                result = UniformResult&lt;object&gt;
+                   .Create(null, 500, &quot;程序出错啦🐞🐞🐞！&quot;);
+
+                //使用日志对象 _logger 的 LogError() 方法将异常信息写入日志文件
+                _logger.LogError(context.Exception, context.Exception.Message);
+
+                // 企业微信异常通知
+                await ExceptionNotice.SendAsync(context.Exception);
+            }
+
+            context.Result = new ContentResult
+            {
+                // 返回状态码设置为200，表示成功
+                StatusCode = StatusCodes.Status200OK,
+                // 设置返回格式
+                ContentType = &quot;application/json;charset=utf-8&quot;,
+                Content = result.ToJson(true)
+            };
+
+
+        }
+
+        // 设置为true，表示异常已经被处理了
+        context.ExceptionHandled = true;
+    }
+}
+
+</code></pre>
+<h3 id="startup使用">Startup使用</h3>
+<pre><code>options.Filters.Add&lt;GlobalExceptionFilter&gt;();
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[gitea创建服务]]></title>
+        <id>https://www.486255.com/4BWEgMc88/</id>
+        <link href="https://www.486255.com/4BWEgMc88/">
+        </link>
+        <updated>2022-11-07T10:14:04.000Z</updated>
+        <summary type="html"><![CDATA[<p>打开cmd，执行命令</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>打开cmd，执行命令</p>
+<!-- more -->
+<pre><code>sc create gitea binPath=&quot;C:\git\gitea-1.17.1-windows-4.0-amd64.exe web --config C:\git\custom\conf\app.ini&quot; start=auto
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[IIS 重定向]]></title>
+        <id>https://www.486255.com/-aEZ2bcZD/</id>
+        <link href="https://www.486255.com/-aEZ2bcZD/">
+        </link>
+        <updated>2022-11-07T08:03:02.000Z</updated>
+        <summary type="html"><![CDATA[<p>条件输入：<code>{HTTPS}</code><br>
+模式：<code>off</code><br>
+重定向url：<code>https://{HTTP_HOST}/{R:1}</code></p>
+]]></summary>
+        <content type="html"><![CDATA[<p>条件输入：<code>{HTTPS}</code><br>
+模式：<code>off</code><br>
+重定向url：<code>https://{HTTP_HOST}/{R:1}</code></p>
+<!-- more -->
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[简单无密码共享]]></title>
+        <id>https://www.486255.com/uUrNJrw7j/</id>
+        <link href="https://www.486255.com/uUrNJrw7j/">
+        </link>
+        <updated>2022-11-07T07:58:39.000Z</updated>
+        <summary type="html"><![CDATA[<p>修改本地安全策略</p>
+<blockquote>
+<p>（这里的修改很重要，win7和win8【拒绝从网络访问这台计算机】默认为空，只有win10默认添加了guest）</p>
+</blockquote>
+]]></summary>
+        <content type="html"><![CDATA[<p>修改本地安全策略</p>
+<blockquote>
+<p>（这里的修改很重要，win7和win8【拒绝从网络访问这台计算机】默认为空，只有win10默认添加了guest）</p>
+</blockquote>
+<!-- more -->
+<p>WIN+R然后“运行”里输入secpol.msc，打开本地安全策略</p>
+<p>1、【本地策略】—【安全选项】—【网络访问：本地账户的共享和安全模型】<br>
+改来宾</p>
+<p>2、【本地策略】—【安全选项】—【账户：来宾账户状态】<br>
+改启用</p>
+<p>3、【本地策略】—【用户权限分配】—【拒绝从网络访问这台计算机】<br>
+删除guest</p>
+<p>共享：everyone<br>
+高级共享里设置为无密码保护的共享</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[前端跨页面通信]]></title>
+        <id>https://www.486255.com/nxJJuoO1x/</id>
+        <link href="https://www.486255.com/nxJJuoO1x/">
+        </link>
+        <updated>2022-11-07T06:50:42.000Z</updated>
+        <summary type="html"><![CDATA[<h3 id="broadcastchannel的使用方法">BroadcastChannel的使用方法</h3>
+<p>首先我们先要初始化一下BroadcastChannel：</p>
+<pre><code>const setChannel = new BroadcastChannel('demos');
+</code></pre>
+]]></summary>
+        <content type="html"><![CDATA[<h3 id="broadcastchannel的使用方法">BroadcastChannel的使用方法</h3>
+<p>首先我们先要初始化一下BroadcastChannel：</p>
+<pre><code>const setChannel = new BroadcastChannel('demos');
+</code></pre>
+<!-- more -->
+<p>传入一个string,用这个来标识BroadcastChannel<br>
+发送消息： 发送消息的话使用它的postMessage方法，但是记住在使用的页面也要初始化BroadcastChannel：</p>
+<pre><code>setChannel.postMessage('要发送消息啦啦啦啦啦啦啦');
+</code></pre>
+<p>监听消息： 要想监听方法的话使用onmessage方法来获取：</p>
+<pre><code>setChannel.onmessage =function(e) {
+
+    console.log('接收到消息:', e.data);
+
+    //一大波你要要的操作
+
+};
+</code></pre>
+<p>关闭连接：</p>
+<pre><code>setChannel..close();
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[页面状态监听]]></title>
+        <id>https://www.486255.com/ye-mian-zhuang-tai-jian-ting/</id>
+        <link href="https://www.486255.com/ye-mian-zhuang-tai-jian-ting/">
+        </link>
+        <updated>2022-11-07T06:43:38.000Z</updated>
+        <content type="html"><![CDATA[<pre><code>document.addEventListener(&quot;visibilitychange&quot;, () =&gt; {
+    if (document.visibilityState === &quot;visible&quot;) {
+        // page is visible
+    } else {
+        // page is hidden
+    }
+});
+</code></pre>
+]]></content>
+    </entry>
+</feed>
